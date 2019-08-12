@@ -1,7 +1,6 @@
 import { Component, ElementRef, HostBinding, Input, ViewChild } from '@angular/core';
 import { EngineService } from './engine.service';
-import { EventService } from '../event.service';
-import { JSDocTagName } from '@angular/compiler/src/output/output_ast';
+import { EventService } from '../services/event.service';
 import { PlayObject } from '../types/play-object.model';
 
 @Component({

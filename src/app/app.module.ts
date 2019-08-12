@@ -7,9 +7,9 @@ import { UiInfobarTopComponent } from './ui/ui-infobar-top/ui-infobar-top.compon
 import { UiSidebarLeftComponent } from './ui/ui-sidebar-left/ui-sidebar-left.component';
 import { UiSidebarRightComponent } from './ui/ui-sidebar-right/ui-sidebar-right.component';
 import { UiComponent } from './ui/ui.component';
-import { WebsocketService } from "./websocket.service";
-import { ChatService } from "./chat.service";
-import { EventService } from "./event.service";
+import { WebsocketService } from "./services/websocket.service";
+import { ChatService } from "./services/chat.service";
+import { EventService } from "./services/event.service";
 
 
 @NgModule({

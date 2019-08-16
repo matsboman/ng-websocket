@@ -15,7 +15,6 @@ export class AppComponent {
   constructor(private chatService: ChatService,
     private eventService: EventService) {
     chatService.messages.subscribe(msg => {
-      // console.log("Response from websocket: " + msg);
       this.eventService.send(msg);
     });
   }
@@ -25,13 +24,11 @@ export class AppComponent {
   }
 
   private message = {
-    author: "tutorialedge",
-    message: "this is a test message"
+    author: "game client",
+    message: "keepalive"
   };
 
   sendMsg() {
-    console.log("new message from client to websocket: ", this.message);
     this.chatService.messages.next(this.message);
-    this.message.message = "";
   }
 }

@@ -1,3 +1,145 @@
-<p>
-  ui-infobar-top works!
-</p>
+<!-- <div class="input-group input-group-sm mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Position x:</span>
+  </div>
+  <input type="text" class="form-control" aria-label="posX" aria-describedby="inputGroup-sizing-sm">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Position y:</span>
+  </div>
+  <input type="text" class="form-control" aria-label="posY" aria-describedby="inputGroup-sizing-sm">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Position z:</span>
+  </div>
+  <input type="text" class="form-control" aria-label="posY" aria-describedby="inputGroup-sizing-sm">
+</div>
+<div class="input-group input-group-sm mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Direction x:</span>
+  </div>
+  <input type="text" class="form-control" aria-label="directionX" aria-describedby="inputGroup-sizing-sm">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Direction y:</span>
+  </div>
+  <input type="text" class="form-control" aria-label="directionY" aria-describedby="inputGroup-sizing-sm">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Direction z:</span>
+  </div>
+  <input type="text" class="form-control" aria-label="directionZ" aria-describedby="inputGroup-sizing-sm">
+</div>
+<div class="input-group input-group-sm mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Speed:</span>
+  </div>
+  <input type="text" class="form-control" aria-label="speed" aria-describedby="inputGroup-sizing-sm">
+ </div> -->
+
+<div class="container" id="controllerArea">
+  <div class="col-md-12">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">New Ship</h3>
+      </div>
+      <div class="panel-body">
+
+
+
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Position</h3>
+              </div>
+              <div class="panel-body">
+                <form [formGroup]="positionForm">
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">X:</span>
+                    </div>
+                    <input type="number" class="form-control" formControlName="posX" aria-label="posX"
+                      aria-describedby="inputGroup-sizing-sm">
+                  </div>
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Y:</span>
+                    </div>
+                    <input type="number" class="form-control" formControlName="posY" aria-label="posY"
+                      aria-describedby="inputGroup-sizing-sm">
+                  </div>
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Z:</span>
+                    </div>
+                    <input type="number" class="form-control" formControlName="posZ" aria-label="posY"
+                      aria-describedby="inputGroup-sizing-sm">
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Direction</h3>
+              </div>
+              <div class="panel-body">
+                <form [formGroup]="directionForm">
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">I:</span>
+                    </div>
+                    <input type="number" class="form-control" formControlName="dirI" aria-label="dirI"
+                      aria-describedby="inputGroup-sizing-sm">
+                  </div>
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">J:</span>
+                    </div>
+                    <input type="number" class="form-control" formControlName="dirJ" aria-label="dirJ"
+                      aria-describedby="inputGroup-sizing-sm">
+                  </div>
+                  <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">K:</span>
+                    </div>
+                    <input type="number" class="form-control" formControlName="dirK" aria-label="dirK"
+                      aria-describedby="inputGroup-sizing-sm">
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Specifications</h3>
+              </div>
+              <div class="panel-body">
+                <form [formGroup]="speedForm">
+                  <label for="exampleFormControlInput1">Speed</label>
+                  <div class="input-group input-group-sm mb-3">
+                    <input type="number" class="form-control" formControlName="speed" aria-label="speed"
+                      aria-describedby="inputGroup-sizing-sm">
+                  </div>
+                </form>
+                <form [formGroup]="nameForm">
+                    <label for="exampleFormControlInput1">Ship Name</label>
+                    <div class="input-group input-group-sm mb-3">
+                      <input type="text" class="form-control" formControlName="name" aria-label="name"
+                        aria-describedby="inputGroup-sizing-sm">
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+            <div style="text-align: center;" class="col-sm-12">
+              <button (click)="onCreateShip()" type="button" style="margin:5px;" class="btn btn-primary">Create Ship</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

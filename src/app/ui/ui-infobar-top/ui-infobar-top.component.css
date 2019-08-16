@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+.panel-title {
+  font-weight: bold;
+}
+
+.ds-container {
+  border:2px solid #ccc;
+  width: 100%;
+  height: 200px;
+  overflow-y: scroll;
+}
+
+#controllerArea .input-group {
+  width:100%;
+  margin-bottom: 10px;
+}

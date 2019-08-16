@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import { Injectable, ElementRef, OnDestroy, NgZone } from '@angular/core';
+import { ShipService } from '../services/ship.service';
+import { PlayPoint } from '../types/play-point.model';
+import { Ship } from '../types/ship.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +14,17 @@ export class EngineService implements OnDestroy {
   private scene: THREE.Scene;
   private light: THREE.AmbientLight;
 
-  private cube: THREE.Mesh;
-  private cubeDirection = 1;
-  private cubePosX = 0;
+
+  private scalingFactor = 1;
+  private sun: THREE.Mesh;
+  private earth: THREE.Mesh;
+  private venus: THREE.Mesh;
 
   private frameId: number = null;
 
-  public constructor(private ngZone: NgZone) {}
+  public constructor(private ngZone: NgZone,
+    private shipService: ShipService) {
+  }
 
   public ngOnDestroy() {
     if (this.frameId != null) {
@@ -25,8 +32,35 @@ export class EngineService implements OnDestroy {
     }
   }
 
-  public setPosX(x: number) {
-    this.cubePosX = x;
+  public setScalingFactor(factor: number) {
+    this.scalingFactor = factor;
+  }
+
+  public addShip(ship: THREE.Mesh) {
+    this.scene.add(ship);
+  }
+
+  public setPos(objectName: string, position: any) {
+    if (objectName == 'sun') {
+      this.sun.position.setX(position.x);
+      this.sun.position.setY(position.y);
+      this.sun.position.setZ(position.z);
+    }
+    else if (objectName == 'earth') {
+      this.earth.position.setX(position.x / this.scalingFactor);
+      this.earth.position.setY(position.y / this.scalingFactor);
+      this.earth.position.setZ(position.z / this.scalingFactor);
+    }
+    else if (objectName == 'venus') {
+      this.venus.position.setX(position.x / this.scalingFactor);
+      this.venus.position.setY(position.y / this.scalingFactor);
+      this.venus.position.setZ(position.z / this.scalingFactor);
+    }
+    else {
+      if (!this.shipService.updateShipPosition(objectName, position)) {
+        this.addShip(this.shipService.createShip(name, position));
+      }
+    }
   }
 
   createScene(canvas: ElementRef<HTMLCanvasElement>): void {
@@ -42,23 +76,29 @@ export class EngineService implements OnDestroy {
 
     // create the scene
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x000000);
 
     this.camera = new THREE.PerspectiveCamera(
       75, window.innerWidth / window.innerHeight, 0.1, 1000
     );
-    this.camera.position.z = 5;
+    this.camera.position.z = 40;
     this.scene.add(this.camera);
 
     // soft white light
-    this.light = new THREE.AmbientLight( 0x404040 );
+    this.light = new THREE.AmbientLight(0x404040);
     this.light.position.z = 10;
     this.scene.add(this.light);
 
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    this.cube = new THREE.Mesh( geometry, material );
-    this.scene.add(this.cube);
+    var sun = new THREE.SphereGeometry(4, 32, 32);
+    var earth = new THREE.SphereGeometry(0.4, 32, 32);
+    var venus = new THREE.SphereGeometry(1.4, 32, 32);
 
+    this.sun = new THREE.Mesh(sun, new THREE.MeshBasicMaterial({ color: 0xffff00 }));
+    this.earth = new THREE.Mesh(earth, new THREE.MeshBasicMaterial({ color: 0x000080 }));
+    this.venus = new THREE.Mesh(venus, new THREE.MeshBasicMaterial({ color: 0x800000 }));
+    this.scene.add(this.sun);
+    this.scene.add(this.earth);
+    this.scene.add(this.venus);
   }
 
   animate(): void {
@@ -79,19 +119,6 @@ export class EngineService implements OnDestroy {
     this.frameId = requestAnimationFrame(() => {
       this.render();
     });
-
-    if (this.cube.position.x < -4) {
-      this.cubeDirection = 1;
-    }
-    if (this.cube.position.x > 4) {
-      this.cubeDirection = -1;
-    }
-    // console.log(this.cube.position.x);
-    // this.cube.position.x += 0.01 * this.cubeDirection;
-    this.cube.position.x = this.cubePosX;
-
-    this.cube.rotation.x += 0.01;
-    this.cube.rotation.y += 0.01;
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -102,6 +129,6 @@ export class EngineService implements OnDestroy {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
 
-    this.renderer.setSize( width, height );
+    this.renderer.setSize(width, height);
   }
 }

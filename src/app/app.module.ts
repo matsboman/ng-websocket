@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AppComponent } from './app.component';
 import { EngineComponent } from './engine/engine.component';
 import { UiInfobarBottomComponent } from './ui/ui-infobar-bottom/ui-infobar-bottom.component';
@@ -10,6 +11,7 @@ import { UiComponent } from './ui/ui.component';
 import { WebsocketService } from "./services/websocket.service";
 import { ChatService } from "./services/chat.service";
 import { EventService } from "./services/event.service";
+import { ShipService } from "./services/ship.service";
 
 
 @NgModule({
@@ -23,10 +25,12 @@ import { EventService } from "./services/event.service";
     UiSidebarRightComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
-    WebsocketService, ChatService, EventService
+    WebsocketService, ChatService, EventService, ShipService
   ],
   bootstrap: [
     AppComponent

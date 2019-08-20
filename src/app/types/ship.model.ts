@@ -1,8 +1,6 @@
-import { PlayPoint } from "./play-point.model";
 import * as THREE from 'three';
 
 export class Ship {
-    private position;
     private name: string;
     private ship: THREE.Mesh;
     private direction = { i: 0, j: 0, k: 0 };

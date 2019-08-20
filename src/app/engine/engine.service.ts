@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Injectable, ElementRef, OnDestroy, NgZone } from '@angular/core';
-import { ShipService } from '../services/ship.service';
+import { Ship } from '../types/ship.model';
+import { Camera } from '../types/camera.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +9,7 @@ import { ShipService } from '../services/ship.service';
 export class EngineService implements OnDestroy {
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
-  private camera: THREE.PerspectiveCamera;
-  private isCameraShipView = false;
+  private camera: Camera;
   private scene: THREE.Scene;
   private light: THREE.AmbientLight;
 
@@ -20,8 +20,9 @@ export class EngineService implements OnDestroy {
 
   private frameId: number = null;
 
-  public constructor(private ngZone: NgZone,
-    private shipService: ShipService) {
+  private ship: Ship = null;
+
+  public constructor(private ngZone: NgZone) {
   }
 
   public ngOnDestroy() {
@@ -34,70 +35,52 @@ export class EngineService implements OnDestroy {
     this.scalingFactor = factor;
   }
 
-  public addShip(ship: THREE.Mesh) {
-    this.scene.add(ship);
+  public createShip(values: any) {
+    let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
+    let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
+    this.ship = new Ship(values.name, position, direction);
+    return this.ship.getThreeShip();
   }
 
-  public setPlanetPosition(name: string, position: any) {
-    if (name == 'sun') {
+  private updateShipPosition(values: any): boolean {
+    if (this.ship == null) {
+      return false;
+    }
+    let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
+    let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
+    this.ship.update(position, direction);
+    return true;
+  }
+
+  public setPlanetPosition(values: any) {
+    var position = { x: values.position.x, y: values.position.y, z: values.position.z };
+    if (values.name == 'sun') {
       this.sun.position.setX(position.x);
       this.sun.position.setY(position.y);
       this.sun.position.setZ(position.z);
     }
-    else if (name == 'earth') {
+    else if (values.name == 'earth') {
       this.earth.position.setX(position.x / this.scalingFactor);
       this.earth.position.setY(position.y / this.scalingFactor);
       this.earth.position.setZ(position.z / this.scalingFactor);
     }
-    else if (name == 'venus') {
+    else if (values.name == 'venus') {
       this.venus.position.setX(position.x / this.scalingFactor);
       this.venus.position.setY(position.y / this.scalingFactor);
       this.venus.position.setZ(position.z / this.scalingFactor);
     }
   }
 
-  public updateShip(name: string, position: any, direction: any) {
-    let isFound = this.shipService.updateShipPosition(name, position, direction);
-    if (!isFound) {
-      this.addShip(this.shipService.createShip(name, position, direction));
+  public updateShip(values: any) {
+    if (!this.updateShipPosition(values)) {
+      this.scene.add(this.createShip(values));
     } else {
-      if (this.isCameraShipView) {
-        this.camera.position.setX(position.x);
-        this.camera.position.setY(position.y);
-        this.camera.position.setZ(position.z);
-        let forwardPoint = this.pointPlusVector(position, this.vectorMultiply(direction, 10));
-        this.camera.lookAt(new THREE.Vector3(forwardPoint.x, forwardPoint.y, forwardPoint.z));
-      }
+      this.camera.updateCamera(values);
     }
-  }
-
-  vectorMultiply(vector: any, speed: number) {
-    console.log();
-    return { i: vector.i * speed, j: vector.j * speed, k: vector.k * speed };
-  }
-
-  pointPlusVector(point: any, vector: any) {
-    return { x: point.x + vector.i, y: point.y + vector.j, z: point.z + vector.k};
   }
 
   public toggleCameraView() {
-    console.log(this.isCameraShipView);
-    if (!this.isCameraShipView) {
-      this.isCameraShipView = true;
-      let point = this.shipService.getShipPosition('one');
-      let direction = this.shipService.getShipDirection('one');
-      let forwardPoint = this.pointPlusVector(point, this.vectorMultiply(direction, 10));
-      this.camera.position.setX(point.x);
-      this.camera.position.setY(point.y);
-      this.camera.position.setZ(point.z);
-      this.camera.lookAt(new THREE.Vector3(forwardPoint.x, forwardPoint.y, forwardPoint.z));
-    } else {
-      this.isCameraShipView = false;
-      this.camera.position.setX(0);
-      this.camera.position.setY(0);
-      this.camera.position.setZ(60);
-      this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-    }
+    this.camera.toggleCameraView(this.ship);
   }
 
   createScene(canvas: ElementRef<HTMLCanvasElement>): void {
@@ -115,11 +98,8 @@ export class EngineService implements OnDestroy {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x000000);
 
-    this.camera = new THREE.PerspectiveCamera(
-      75, window.innerWidth / window.innerHeight, 0.1, 1000
-    );
-    this.camera.position.z = 60;
-    this.scene.add(this.camera);
+    this.camera = new Camera({ x: 0, y: 0, z: 60});
+    this.scene.add(this.camera.getThreeCamera());
 
     // soft white light
     this.light = new THREE.AmbientLight(0x404040);
@@ -145,7 +125,6 @@ export class EngineService implements OnDestroy {
       window.addEventListener('DOMContentLoaded', () => {
         this.render();
       });
-
       window.addEventListener('resize', () => {
         this.resize();
       });
@@ -156,16 +135,13 @@ export class EngineService implements OnDestroy {
     this.frameId = requestAnimationFrame(() => {
       this.render();
     });
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera.getThreeCamera());
   }
 
   resize() {
     const width = window.innerWidth;
     const height = window.innerHeight;
-
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-
+    this.camera.resize(width, height);
     this.renderer.setSize(width, height);
   }
 }

@@ -11,7 +11,6 @@ import { UiComponent } from './ui/ui.component';
 import { WebsocketService } from "./services/websocket.service";
 import { ChatService } from "./services/chat.service";
 import { EventService } from "./services/event.service";
-import { ShipService } from "./services/ship.service";
 
 
 @NgModule({
@@ -30,7 +29,7 @@ import { ShipService } from "./services/ship.service";
     ReactiveFormsModule
   ],
   providers: [
-    WebsocketService, ChatService, EventService, ShipService
+    WebsocketService, ChatService, EventService
   ],
   bootstrap: [
     AppComponent

@@ -10,20 +10,36 @@ export class ShipService {
 
   constructor() { }
 
-  public createShip(name: string, position: any) {
-    var ship = new Ship(name, new PlayPoint(position.x, position.y, position.z));
+  public createShip(name: string, position: any, direction: any) {
+    var ship = new Ship(name, position, direction);
     this.shipArray.push(ship);
     return ship.getThreeShip();
   }
 
-  public updateShipPosition(name: string, position: any): boolean {
+  public updateShipPosition(name: string, position: any, direction: any): boolean {
     let isFound = false;
     for (let i = 0; i < this.shipArray.length; i++) {
       if (this.shipArray[i].getName() == name) {
         isFound = true;
-        this.shipArray[i].updatePosition(position);
+        this.shipArray[i].update(position, direction);
       }
     }
     return isFound;
+  }
+
+  public getShipPosition(name: string) {
+    for (let i = 0; i < this.shipArray.length; i++) {
+      if (this.shipArray[i].getName() == name) {
+        return this.shipArray[i].getPosition();
+      }
+    }
+  }
+
+  public getShipDirection(name: string) {
+    for (let i = 0; i < this.shipArray.length; i++) {
+      if (this.shipArray[i].getName() == name) {
+        return this.shipArray[i].getDirection();
+      }
+    }
   }
 }

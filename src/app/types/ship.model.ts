@@ -2,11 +2,12 @@ import { PlayPoint } from "./play-point.model";
 import * as THREE from 'three';
 
 export class Ship {
-    private position: PlayPoint = new PlayPoint(10, 0, 0);
+    private position;
     private name: string;
     private ship: THREE.Mesh;
+    private direction = { i: 0, j: 0, k: 0 };
 
-    constructor(name: string, position: PlayPoint) {
+    constructor(name: string, position: any, direction: any) {
       this.name = name;
 
       var geometry = new THREE.SphereGeometry(0.5, 32, 32);
@@ -16,6 +17,10 @@ export class Ship {
       this.ship.position.setX(position.x);
       this.ship.position.setY(position.y);
       this.ship.position.setZ(position.z);
+
+      this.direction.i = direction.i;
+      this.direction.j = direction.j;
+      this.direction.k = direction.k;
     }
 
     public getThreeShip() {
@@ -26,9 +31,20 @@ export class Ship {
         return this.name;
     }
 
-    public updatePosition(position: PlayPoint) {
+    public getPosition() {
+        return { x: this.ship.position.x, y: this.ship.position.y, z: this.ship.position.z };
+    }
+
+    public getDirection() {
+        return { i: this.direction.i, j: this.direction.j, k: this.direction.k };
+    }
+
+    public update(position: any, direction: any) {
         this.ship.position.setX(position.x);
         this.ship.position.setY(position.y);
         this.ship.position.setZ(position.z);
+        this.direction.i = direction.i;
+        this.direction.j = direction.j;
+        this.direction.k = direction.k;
     }
 }

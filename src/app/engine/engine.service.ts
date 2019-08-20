@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 import { Injectable, ElementRef, OnDestroy, NgZone } from '@angular/core';
 import { ShipService } from '../services/ship.service';
-import { PlayPoint } from '../types/play-point.model';
-import { Ship } from '../types/ship.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +9,9 @@ export class EngineService implements OnDestroy {
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;
+  private isCameraShipView = false;
   private scene: THREE.Scene;
   private light: THREE.AmbientLight;
-
 
   private scalingFactor = 1;
   private sun: THREE.Mesh;
@@ -40,26 +38,65 @@ export class EngineService implements OnDestroy {
     this.scene.add(ship);
   }
 
-  public setPos(objectName: string, position: any) {
-    if (objectName == 'sun') {
+  public setPlanetPosition(name: string, position: any) {
+    if (name == 'sun') {
       this.sun.position.setX(position.x);
       this.sun.position.setY(position.y);
       this.sun.position.setZ(position.z);
     }
-    else if (objectName == 'earth') {
+    else if (name == 'earth') {
       this.earth.position.setX(position.x / this.scalingFactor);
       this.earth.position.setY(position.y / this.scalingFactor);
       this.earth.position.setZ(position.z / this.scalingFactor);
     }
-    else if (objectName == 'venus') {
+    else if (name == 'venus') {
       this.venus.position.setX(position.x / this.scalingFactor);
       this.venus.position.setY(position.y / this.scalingFactor);
       this.venus.position.setZ(position.z / this.scalingFactor);
     }
-    else {
-      if (!this.shipService.updateShipPosition(objectName, position)) {
-        this.addShip(this.shipService.createShip(name, position));
+  }
+
+  public updateShip(name: string, position: any, direction: any) {
+    let isFound = this.shipService.updateShipPosition(name, position, direction);
+    if (!isFound) {
+      this.addShip(this.shipService.createShip(name, position, direction));
+    } else {
+      if (this.isCameraShipView) {
+        this.camera.position.setX(position.x);
+        this.camera.position.setY(position.y);
+        this.camera.position.setZ(position.z);
+        let forwardPoint = this.pointPlusVector(position, this.vectorMultiply(direction, 10));
+        this.camera.lookAt(new THREE.Vector3(forwardPoint.x, forwardPoint.y, forwardPoint.z));
       }
+    }
+  }
+
+  vectorMultiply(vector: any, speed: number) {
+    console.log();
+    return { i: vector.i * speed, j: vector.j * speed, k: vector.k * speed };
+  }
+
+  pointPlusVector(point: any, vector: any) {
+    return { x: point.x + vector.i, y: point.y + vector.j, z: point.z + vector.k};
+  }
+
+  public toggleCameraView() {
+    console.log(this.isCameraShipView);
+    if (!this.isCameraShipView) {
+      this.isCameraShipView = true;
+      let point = this.shipService.getShipPosition('one');
+      let direction = this.shipService.getShipDirection('one');
+      let forwardPoint = this.pointPlusVector(point, this.vectorMultiply(direction, 10));
+      this.camera.position.setX(point.x);
+      this.camera.position.setY(point.y);
+      this.camera.position.setZ(point.z);
+      this.camera.lookAt(new THREE.Vector3(forwardPoint.x, forwardPoint.y, forwardPoint.z));
+    } else {
+      this.isCameraShipView = false;
+      this.camera.position.setX(0);
+      this.camera.position.setY(0);
+      this.camera.position.setZ(60);
+      this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
   }
 
@@ -81,7 +118,7 @@ export class EngineService implements OnDestroy {
     this.camera = new THREE.PerspectiveCamera(
       75, window.innerWidth / window.innerHeight, 0.1, 1000
     );
-    this.camera.position.z = 40;
+    this.camera.position.z = 60;
     this.scene.add(this.camera);
 
     // soft white light

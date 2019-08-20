@@ -1,5 +1,3 @@
-import { PlayVector } from "./play-vector.model";
-
 export class PlayPoint {
     x: number;
     y: number;

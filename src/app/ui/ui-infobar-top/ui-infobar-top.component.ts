@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { EventService } from '../../services/event.service';
-import { PlayPoint } from 'src/app/types/play-point.model';
 
 @Component({
   selector: 'app-ui-infobar-top',
@@ -57,18 +56,10 @@ export class UiInfobarTopComponent implements OnInit {
       for (let i = 0; i < values.length; i++) {
         if (values[i].type == "ship") {
           var shipName = values[i].name;
-          var pos = {
-            x: values[i].positionX,
-            y: values[i].positionY,
-            z: values[i].positionZ
-          };
+          var pos = {x: values[i].positionX, y: values[i].positionY, z: values[i].positionZ};
           if (!this.shipsIncludes(shipName)) {
             this.shipsArray.push({
-              name: shipName,
-              posX: pos.x,
-              posY: pos.y,
-              posZ: pos.z
-            });
+              name: shipName, posX: pos.x, posY: pos.y, posZ: pos.z});
             // console.log(this.shipsArray);
           } else {
             this.updatePosition(shipName, pos);

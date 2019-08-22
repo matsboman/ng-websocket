@@ -25,6 +25,13 @@ export class EngineComponent {
       console.log(event);
       this.engineService.toggleCameraView();
     }
+    if (event.key == 'f') {
+      console.log('fire...');
+      this.chatService.messages.next({
+        message: "fire",
+        author: "game client"
+      });
+    }
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -69,7 +76,7 @@ export class EngineComponent {
       this.chatService.messages.next(jsonMessage);
     }
     else if (jsonMessage.message == "new ship created") {
-      this.engineService.createShip(jsonMessage.values);
+      this.engineService.updateShip(jsonMessage.values);
     } else {
       console.log(jsonMessage);
     }
@@ -82,6 +89,9 @@ export class EngineComponent {
       }
       else if (objList[i].type == "ship") {
         this.engineService.updateShip(objList[i]);
+      }
+      else if (objList[i].type == "shot") {
+        this.engineService.updateShot(objList[i]);
       }
     }
   }

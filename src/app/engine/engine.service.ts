@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Injectable, ElementRef, OnDestroy, NgZone } from '@angular/core';
 import { Ship } from '../types/ship.model';
 import { Camera } from '../types/camera.model';
+import { Shot } from '../types/shot.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,8 @@ export class EngineService implements OnDestroy {
   private frameId: number = null;
 
   private ship: Ship = null;
+
+  private shotArray: Shot[] = [];
 
   public constructor(private ngZone: NgZone) {
   }
@@ -42,6 +45,14 @@ export class EngineService implements OnDestroy {
     return this.ship.getThreeShip();
   }
 
+  public createShot(values: any) {
+    let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
+    let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
+    var shot: Shot = new Shot(values.name, position, direction);
+    this.shotArray.push(shot);
+    return shot.getThreeShot();
+  }
+
   private updateShipPosition(values: any): boolean {
     if (this.ship == null) {
       return false;
@@ -50,6 +61,19 @@ export class EngineService implements OnDestroy {
     let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
     this.ship.update(position, direction);
     return true;
+  }
+
+  private updateShotPosition(values: any): boolean {
+    var isFound = false;
+    for (let i = 0; i < this.shotArray.length; i++) {
+      if (values.name == this.shotArray[i].getName()) {
+        let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
+        let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
+        this.shotArray[i].update(position, direction);
+        isFound = true;
+      }
+    }
+    return isFound;
   }
 
   public setPlanetPosition(values: any) {
@@ -73,9 +97,17 @@ export class EngineService implements OnDestroy {
 
   public updateShip(values: any) {
     if (!this.updateShipPosition(values)) {
-      this.scene.add(this.createShip(values));
+      var ship = this.createShip(values);
+      this.scene.add(ship);
     } else {
       this.camera.updateCamera(values);
+    }
+  }
+
+  public updateShot(values: any) {
+    if (!this.updateShotPosition(values)) {
+      var shot = this.createShot(values);
+      this.scene.add(shot);
     }
   }
 
@@ -98,7 +130,7 @@ export class EngineService implements OnDestroy {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x000000);
 
-    this.camera = new Camera({ x: 0, y: 0, z: 60});
+    this.camera = new Camera({ x: 0, y: 0, z: 60 });
     this.scene.add(this.camera.getThreeCamera());
 
     // soft white light

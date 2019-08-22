@@ -65,7 +65,7 @@ export class Camera {
     private resetCamera() {
         this.camera.position.setX(0);
         this.camera.position.setY(0);
-        this.camera.position.setZ(60);
+        this.camera.position.setZ(40);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
 }

@@ -67,10 +67,15 @@ export class EngineService implements OnDestroy {
     var isFound = false;
     for (let i = 0; i < this.shotArray.length; i++) {
       if (values.name == this.shotArray[i].getName()) {
-        let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
-        let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
-        this.shotArray[i].update(position, direction);
         isFound = true;
+        if (values.message == "died") {
+          this.scene.remove(this.shotArray[i].getThreeShot());
+          this.shotArray = this.shotArray.filter(shot => shot.getName() !== this.shotArray[i].getName());
+        } else {
+          let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
+          let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
+          this.shotArray[i].update(position, direction);
+        }
       }
     }
     return isFound;

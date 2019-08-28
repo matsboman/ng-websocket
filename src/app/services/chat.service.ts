@@ -8,8 +8,8 @@ import 'rxjs/add/operator/catch';
 const CHAT_URL = "ws://localhost:9090/websocket";
 
 export interface Message {
-  author: string;
   message: string;
+  name: string;
 }
 
 @Injectable()

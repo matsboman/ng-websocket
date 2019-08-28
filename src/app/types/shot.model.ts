@@ -4,6 +4,7 @@ export class Shot {
     private name: string;
     private shot: THREE.Mesh;
     private direction = { i: 0, j: 0, k: 0 };
+    private died = false;
 
     constructor(name: string, position: any, direction: any) {
       this.name = name;
@@ -29,6 +30,14 @@ export class Shot {
         return this.name;
     }
 
+    public setDied() {
+        this.died = true;
+    }
+
+    public isDead() {
+        return this.died;
+    }
+    
     public getPosition() {
         return { x: this.shot.position.x, y: this.shot.position.y, z: this.shot.position.z };
     }

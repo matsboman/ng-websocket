@@ -29,7 +29,7 @@ export class EngineComponent {
       console.log('fire...');
       this.chatService.messages.next({
         message: "fire",
-        author: "game client"
+        name: this.engineService.playerShipName()
       });
     }
   }
@@ -39,13 +39,13 @@ export class EngineComponent {
     if (event.key == 'ArrowRight') {
       this.chatService.messages.next({
         message: "yaw_right",
-        author: ""
+        name: this.engineService.playerShipName()
       });
     }
     if (event.key == 'ArrowLeft') {
       this.chatService.messages.next({
         message: "yaw_left",
-        author: "game client"
+        name: this.engineService.playerShipName()
       });
     }
     if (event.key == 'ArrowUp' ||
@@ -73,6 +73,7 @@ export class EngineComponent {
     }
     else if (jsonMessage.message == "newship") {
       console.log(jsonMessage);
+      this.engineService.createShip(jsonMessage, true);
       this.chatService.messages.next(jsonMessage);
     }
     else if (jsonMessage.message == "new ship created") {

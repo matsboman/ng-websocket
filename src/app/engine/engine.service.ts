@@ -21,9 +21,9 @@ export class EngineService implements OnDestroy {
 
   private frameId: number = null;
 
-  private ship: Ship = null;
-
+  private shipArray: Ship[] = [];
   private shotArray: Shot[] = [];
+  private myShipName: string;
 
   public constructor(private ngZone: NgZone) {
   }
@@ -38,11 +38,23 @@ export class EngineService implements OnDestroy {
     this.scalingFactor = factor;
   }
 
-  public createShip(values: any) {
+  public playerShipName() {
+    var name = null;
+    for (let i = 0; i < this.shipArray.length; i++) {
+      if (this.shipArray[i].isPlayer()) {
+        name = this.shipArray[i].getName();
+      }
+    }
+    return name;
+  }
+
+  public createShip(values: any, isPlayerShip: boolean) {
+    console.log(values);
     let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
     let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
-    this.ship = new Ship(values.name, position, direction);
-    return this.ship.getThreeShip();
+    var ship = new Ship(values.name, position, direction, isPlayerShip);
+    this.shipArray.push(ship);
+    this.scene.add(ship.getThreeShip());
   }
 
   public createShot(values: any) {
@@ -54,13 +66,16 @@ export class EngineService implements OnDestroy {
   }
 
   private updateShipPosition(values: any): boolean {
-    if (this.ship == null) {
-      return false;
+    var isFound = false;
+    for (let i = 0; i < this.shipArray.length; i++) {
+      if (values.name == this.shipArray[i].getName()) {
+        isFound = true;
+        let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
+        let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
+        this.shipArray[i].update(position, direction);
+      }
     }
-    let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
-    let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
-    this.ship.update(position, direction);
-    return true;
+    return isFound;
   }
 
   private updateShotPosition(values: any): boolean {
@@ -68,13 +83,16 @@ export class EngineService implements OnDestroy {
     for (let i = 0; i < this.shotArray.length; i++) {
       if (values.name == this.shotArray[i].getName()) {
         isFound = true;
-        if (values.message == "died") {
-          this.scene.remove(this.shotArray[i].getThreeShot());
-          this.shotArray = this.shotArray.filter(shot => shot.getName() !== this.shotArray[i].getName());
-        } else {
+        console.log(values.message);
+        if (!this.shotArray[i].isDead()) {
+          if (values.message == "died") { this.shotArray[i].setDied(); }
           let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
           let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
           this.shotArray[i].update(position, direction);
+        } else if (this.shotArray[i].isDead()) {
+          this.scene.remove(this.shotArray[i].getThreeShot());
+        } else if (values.message == "terminated") {
+          this.shotArray = this.shotArray.filter(shot => shot.getName() !== this.shotArray[i].getName());
         }
       }
     }
@@ -102,10 +120,14 @@ export class EngineService implements OnDestroy {
 
   public updateShip(values: any) {
     if (!this.updateShipPosition(values)) {
-      var ship = this.createShip(values);
-      this.scene.add(ship);
+      console.log('adding ship to scene...');
+      var ship = this.createShip(values, false);
     } else {
-      this.camera.updateCamera(values);
+      for (let i = 0; i < this.shipArray.length; i++) {
+        if (this.shipArray[i].getName() == values.name && this.shipArray[i].isPlayer()) {
+          this.camera.updateCamera(values);
+        }
+      }
     }
   }
 
@@ -117,7 +139,11 @@ export class EngineService implements OnDestroy {
   }
 
   public toggleCameraView() {
-    this.camera.toggleCameraView(this.ship);
+    for (let i = 0; i < this.shipArray.length; i++) {
+      if (this.shipArray[i].isPlayer()) {
+        this.camera.toggleCameraView(this.shipArray[i]);
+      }
+    }
   }
 
   createScene(canvas: ElementRef<HTMLCanvasElement>): void {

@@ -4,9 +4,11 @@ export class Ship {
     private name: string;
     private ship: THREE.Mesh;
     private direction = { i: 0, j: 0, k: 0 };
+    private isPlayerShip = false;
 
-    constructor(name: string, position: any, direction: any) {
+    constructor(name: string, position: any, direction: any, isPlayerShip: boolean) {
       this.name = name;
+      this.isPlayerShip = isPlayerShip;
 
       var geometry = new THREE.SphereGeometry(0.5, 32, 32);
       var material = new THREE.MeshBasicMaterial({ color: 0x9494ff });
@@ -19,6 +21,10 @@ export class Ship {
       this.direction.i = direction.i;
       this.direction.j = direction.j;
       this.direction.k = direction.k;
+    }
+
+    public isPlayer(): boolean {
+        return this.isPlayerShip;
     }
 
     public getThreeShip() {

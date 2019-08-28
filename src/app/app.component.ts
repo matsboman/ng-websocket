@@ -24,7 +24,7 @@ export class AppComponent {
   }
 
   private message = {
-    author: "game client",
+    name: "game client",
     message: "keepalive"
   };
 

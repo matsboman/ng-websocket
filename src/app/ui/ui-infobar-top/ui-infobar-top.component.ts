@@ -56,10 +56,12 @@ export class UiInfobarTopComponent implements OnInit {
       for (let i = 0; i < values.length; i++) {
         if (values[i].type == "ship") {
           var shipName = values[i].name;
-          var pos = {x: values[i].positionX, y: values[i].positionY, z: values[i].positionZ};
+          var pos = values[i].position;
           if (!this.shipsIncludes(shipName)) {
             this.shipsArray.push({
-              name: shipName, posX: pos.x, posY: pos.y, posZ: pos.z});
+              name: values[i].name,
+              posX: values[i].position.x, posY: values[i].position.y, posZ: values[i].position.z
+            });
             // console.log(this.shipsArray);
           } else {
             this.updatePosition(shipName, pos);
@@ -73,12 +75,16 @@ export class UiInfobarTopComponent implements OnInit {
     this.eventService.send(JSON.stringify(
       {
         message: "newship",
-        positionX: this.positionForm.controls['posX'].value,
-        positionY: this.positionForm.controls['posY'].value,
-        positionZ: this.positionForm.controls['posZ'].value,
-        directionI: this.directionForm.controls['dirI'].value,
-        directionJ: this.directionForm.controls['dirJ'].value,
-        directionK: this.directionForm.controls['dirK'].value,
+        position: {
+          x: this.positionForm.controls['posX'].value,
+          y: this.positionForm.controls['posY'].value,
+          z: this.positionForm.controls['posZ'].value
+        },
+        direction: {
+          i: this.directionForm.controls['dirI'].value,
+          j: this.directionForm.controls['dirJ'].value,
+          k: this.directionForm.controls['dirK'].value
+        },
         speed: this.speedForm.controls['speed'].value,
         name: this.nameForm.controls['name'].value
       }));

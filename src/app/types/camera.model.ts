@@ -44,8 +44,8 @@ export class Camera {
 
     public updateCamera(values: any) {
         if (this.isCameraShipView) {
-            let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
-            let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
+            let position = { x: values.x, y: values.y, z: values.z };
+            let direction = { i: values.i, j: values.j, k: values.k };
             this.camera.position.setX(position.x);
             this.camera.position.setY(position.y);
             this.camera.position.setZ(position.z);
@@ -65,7 +65,7 @@ export class Camera {
     private resetCamera() {
         this.camera.position.setX(0);
         this.camera.position.setY(0);
-        this.camera.position.setZ(40);
+        this.camera.position.setZ(30);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
 }

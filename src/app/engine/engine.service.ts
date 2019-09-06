@@ -50,17 +50,13 @@ export class EngineService implements OnDestroy {
 
   public createShip(values: any, isPlayerShip: boolean) {
     console.log(values);
-    let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
-    let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
-    var ship = new Ship(values.name, position, direction, isPlayerShip);
+    var ship = new Ship(values.name, values.position, values.direction, isPlayerShip);
     this.shipArray.push(ship);
     this.scene.add(ship.getThreeShip());
   }
 
   public createShot(values: any) {
-    let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
-    let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
-    var shot: Shot = new Shot(values.name, position, direction);
+    var shot: Shot = new Shot(values.name, values.position, values.direction);
     this.shotArray.push(shot);
     return shot.getThreeShot();
   }
@@ -70,9 +66,7 @@ export class EngineService implements OnDestroy {
     for (let i = 0; i < this.shipArray.length; i++) {
       if (values.name == this.shipArray[i].getName()) {
         isFound = true;
-        let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
-        let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
-        this.shipArray[i].update(position, direction);
+        this.shipArray[i].update(values.position, values.direction);
       }
     }
     return isFound;
@@ -86,9 +80,7 @@ export class EngineService implements OnDestroy {
         console.log(values.message);
         if (!this.shotArray[i].isDead()) {
           if (values.message == "died") { this.shotArray[i].setDied(); }
-          let position = { x: values.positionX, y: values.positionY, z: values.positionZ };
-          let direction = { i: values.directionI, j: values.directionJ, k: values.directionK };
-          this.shotArray[i].update(position, direction);
+          this.shotArray[i].update(values.position, values.direction);
         } else if (this.shotArray[i].isDead()) {
           this.scene.remove(this.shotArray[i].getThreeShot());
         } else if (values.message == "terminated") {

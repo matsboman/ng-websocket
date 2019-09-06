@@ -133,6 +133,7 @@ export class EngineService implements OnDestroy {
   public toggleCameraView() {
     for (let i = 0; i < this.shipArray.length; i++) {
       if (this.shipArray[i].isPlayer()) {
+        console.log(this.shipArray[i]);
         this.camera.toggleCameraView(this.shipArray[i]);
       }
     }

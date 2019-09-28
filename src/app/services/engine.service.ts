@@ -23,10 +23,9 @@ export class EngineService implements OnDestroy {
 
   private shipArray: Ship[] = [];
   private shotArray: Shot[] = [];
-  private myShipName: string;
+  // private myShipName: string;
 
-  public constructor(private ngZone: NgZone) {
-  }
+  public constructor(private ngZone: NgZone) {}
 
   public ngOnDestroy() {
     if (this.frameId != null) {
@@ -39,7 +38,7 @@ export class EngineService implements OnDestroy {
   }
 
   public playerShipName() {
-    var name = null;
+    let name = null;
     for (let i = 0; i < this.shipArray.length; i++) {
       if (this.shipArray[i].isPlayer()) {
         name = this.shipArray[i].getName();
@@ -50,21 +49,26 @@ export class EngineService implements OnDestroy {
 
   public createShip(values: any, isPlayerShip: boolean) {
     console.log(values);
-    var ship = new Ship(values.name, values.position, values.direction, isPlayerShip);
+    const ship = new Ship(
+      values.name,
+      values.position,
+      values.direction,
+      isPlayerShip
+    );
     this.shipArray.push(ship);
     this.scene.add(ship.getThreeShip());
   }
 
   public createShot(values: any) {
-    var shot: Shot = new Shot(values.name, values.position, values.direction);
+    const shot: Shot = new Shot(values.name, values.position, values.direction);
     this.shotArray.push(shot);
     return shot.getThreeShot();
   }
 
   private updateShipPosition(values: any): boolean {
-    var isFound = false;
+    let isFound = false;
     for (let i = 0; i < this.shipArray.length; i++) {
-      if (values.name == this.shipArray[i].getName()) {
+      if (values.name === this.shipArray[i].getName()) {
         isFound = true;
         this.shipArray[i].update(values.position, values.direction);
       }
@@ -73,18 +77,22 @@ export class EngineService implements OnDestroy {
   }
 
   private updateShotPosition(values: any): boolean {
-    var isFound = false;
+    let isFound = false;
     for (let i = 0; i < this.shotArray.length; i++) {
-      if (values.name == this.shotArray[i].getName()) {
+      if (values.name === this.shotArray[i].getName()) {
         isFound = true;
         console.log(values.message);
         if (!this.shotArray[i].isDead()) {
-          if (values.message == "died") { this.shotArray[i].setDied(); }
+          if (values.message === 'died') {
+            this.shotArray[i].setDied();
+          }
           this.shotArray[i].update(values.position, values.direction);
         } else if (this.shotArray[i].isDead()) {
           this.scene.remove(this.shotArray[i].getThreeShot());
-        } else if (values.message == "terminated") {
-          this.shotArray = this.shotArray.filter(shot => shot.getName() !== this.shotArray[i].getName());
+        } else if (values.message === 'terminated') {
+          this.shotArray = this.shotArray.filter(
+            shot => shot.getName() !== this.shotArray[i].getName()
+          );
         }
       }
     }
@@ -92,18 +100,20 @@ export class EngineService implements OnDestroy {
   }
 
   public setPlanetPosition(values: any) {
-    var position = { x: values.position.x, y: values.position.y, z: values.position.z };
-    if (values.name == 'sun') {
+    const position = {
+      x: values.position.x,
+      y: values.position.y,
+      z: values.position.z
+    };
+    if (values.name === 'sun') {
       this.sun.position.setX(position.x);
       this.sun.position.setY(position.y);
       this.sun.position.setZ(position.z);
-    }
-    else if (values.name == 'earth') {
+    } else if (values.name === 'earth') {
       this.earth.position.setX(position.x / this.scalingFactor);
       this.earth.position.setY(position.y / this.scalingFactor);
       this.earth.position.setZ(position.z / this.scalingFactor);
-    }
-    else if (values.name == 'venus') {
+    } else if (values.name === 'venus') {
       this.venus.position.setX(position.x / this.scalingFactor);
       this.venus.position.setY(position.y / this.scalingFactor);
       this.venus.position.setZ(position.z / this.scalingFactor);
@@ -113,10 +123,13 @@ export class EngineService implements OnDestroy {
   public updateShip(values: any) {
     if (!this.updateShipPosition(values)) {
       console.log('adding ship to scene...');
-      var ship = this.createShip(values, false);
+      const ship = this.createShip(values, false);
     } else {
       for (let i = 0; i < this.shipArray.length; i++) {
-        if (this.shipArray[i].getName() == values.name && this.shipArray[i].isPlayer()) {
+        if (
+          this.shipArray[i].getName() === values.name &&
+          this.shipArray[i].isPlayer()
+        ) {
           this.camera.updateCamera(values);
         }
       }
@@ -125,7 +138,7 @@ export class EngineService implements OnDestroy {
 
   public updateShot(values: any) {
     if (!this.updateShotPosition(values)) {
-      var shot = this.createShot(values);
+      const shot = this.createShot(values);
       this.scene.add(shot);
     }
   }
@@ -145,7 +158,7 @@ export class EngineService implements OnDestroy {
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
-      alpha: true,    // transparent background
+      alpha: true, // transparent background
       antialias: true // smooth edges
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -162,13 +175,22 @@ export class EngineService implements OnDestroy {
     this.light.position.z = 10;
     this.scene.add(this.light);
 
-    var sun = new THREE.SphereGeometry(4, 32, 32);
-    var earth = new THREE.SphereGeometry(0.4, 32, 32);
-    var venus = new THREE.SphereGeometry(1.4, 32, 32);
+    const sun = new THREE.SphereGeometry(4, 32, 32);
+    const earth = new THREE.SphereGeometry(0.4, 32, 32);
+    const venus = new THREE.SphereGeometry(1.4, 32, 32);
 
-    this.sun = new THREE.Mesh(sun, new THREE.MeshBasicMaterial({ color: 0xffff00 }));
-    this.earth = new THREE.Mesh(earth, new THREE.MeshBasicMaterial({ color: 0x000080 }));
-    this.venus = new THREE.Mesh(venus, new THREE.MeshBasicMaterial({ color: 0x800000 }));
+    this.sun = new THREE.Mesh(
+      sun,
+      new THREE.MeshBasicMaterial({ color: 0xffff00 })
+    );
+    this.earth = new THREE.Mesh(
+      earth,
+      new THREE.MeshBasicMaterial({ color: 0x000080 })
+    );
+    this.venus = new THREE.Mesh(
+      venus,
+      new THREE.MeshBasicMaterial({ color: 0x800000 })
+    );
     this.scene.add(this.sun);
     this.scene.add(this.earth);
     this.scene.add(this.venus);

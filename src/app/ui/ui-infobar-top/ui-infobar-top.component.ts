@@ -5,8 +5,10 @@ import { EventService } from '../../services/event.service';
 @Component({
   selector: 'app-ui-infobar-top',
   templateUrl: './ui-infobar-top.component.html',
-  styleUrls: ['./ui-infobar-top.component.css',
-    '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css']
+  styleUrls: [
+    './ui-infobar-top.component.css',
+    '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
+  ]
 })
 export class UiInfobarTopComponent implements OnInit {
   positionForm: FormGroup;
@@ -16,23 +18,33 @@ export class UiInfobarTopComponent implements OnInit {
 
   shipsArray: any[] = [];
 
-  constructor(private formBuilder: FormBuilder,
-    private eventService: EventService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private eventService: EventService
+  ) {}
 
   ngOnInit() {
-    this.positionForm = this.formBuilder.group({ posX: [0.0], posY: [0.0], posZ: [0.0] });
-    this.directionForm = this.formBuilder.group({ dirI: [0.0], dirJ: [0.0], dirK: [0.0] });
+    this.positionForm = this.formBuilder.group({
+      posX: [0.0],
+      posY: [0.0],
+      posZ: [0.0]
+    });
+    this.directionForm = this.formBuilder.group({
+      dirI: [0.0],
+      dirJ: [0.0],
+      dirK: [0.0]
+    });
     this.speedForm = this.formBuilder.group({ speed: [0.0] });
     this.nameForm = this.formBuilder.group({ name: [] });
-    this.eventService.change.subscribe(event => {
+    this.eventService.change.subscribe((event: any) => {
       this.handleEvent(event);
     });
   }
 
   private shipsIncludes(name: string): boolean {
-    let isFound: boolean = false;
+    let isFound = false;
     for (let i = 0; i < this.shipsArray.length; i++) {
-      if (this.shipsArray[i].name == name) {
+      if (this.shipsArray[i].name === name) {
         isFound = true;
       }
     }
@@ -41,26 +53,28 @@ export class UiInfobarTopComponent implements OnInit {
 
   private updatePosition(name: string, position: any) {
     for (let i = 0; i < this.shipsArray.length; i++) {
-      if (this.shipsArray[i].name == name) {
-        this.shipsArray[i].posX = position.x;
-        this.shipsArray[i].posY = position.y;
-        this.shipsArray[i].posZ = position.z;
+      if (this.shipsArray[i].name === name) {
+        this.shipsArray[i].posX = position.x.toPrecision(5);
+        this.shipsArray[i].posY = position.y.toPrecision(5);
+        this.shipsArray[i].posZ = position.z.toPrecision(5);
       }
     }
   }
 
   private handleEvent(event: any) {
-    let jsonMessage = JSON.parse(event);
-    if (jsonMessage.message == "status") {
-      var values = jsonMessage.values;
+    const jsonMessage = JSON.parse(event);
+    if (jsonMessage.message === 'status') {
+      const values = jsonMessage.values;
       for (let i = 0; i < values.length; i++) {
-        if (values[i].type == "ship") {
-          var shipName = values[i].name;
-          var pos = values[i].position;
+        if (values[i].type === 'ship') {
+          const shipName = values[i].name;
+          const pos = values[i].position;
           if (!this.shipsIncludes(shipName)) {
             this.shipsArray.push({
               name: values[i].name,
-              posX: values[i].position.x, posY: values[i].position.y, posZ: values[i].position.z
+              posX: values[i].position.x,
+              posY: values[i].position.y,
+              posZ: values[i].position.z
             });
             // console.log(this.shipsArray);
           } else {
@@ -72,9 +86,9 @@ export class UiInfobarTopComponent implements OnInit {
   }
 
   public onCreateShip() {
-    this.eventService.send(JSON.stringify(
-      {
-        message: "newship",
+    this.eventService.send(
+      JSON.stringify({
+        message: 'newship',
         position: {
           x: this.positionForm.controls['posX'].value,
           y: this.positionForm.controls['posY'].value,
@@ -87,7 +101,7 @@ export class UiInfobarTopComponent implements OnInit {
         },
         speed: this.speedForm.controls['speed'].value,
         name: this.nameForm.controls['name'].value
-      }));
+      })
+    );
   }
-
 }

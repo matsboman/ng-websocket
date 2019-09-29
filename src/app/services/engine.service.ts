@@ -70,7 +70,18 @@ export class EngineService implements OnDestroy {
     for (let i = 0; i < this.shipArray.length; i++) {
       if (values.name === this.shipArray[i].getName()) {
         isFound = true;
-        this.shipArray[i].update(values.position, values.direction);
+        if (!this.shipArray[i].isDead()) {
+          if (values.message === 'died') {
+            this.shipArray[i].setDied();
+          }
+          this.shipArray[i].update(values.position, values.direction);
+        } else if (this.shipArray[i].isDead()) {
+          this.scene.remove(this.shipArray[i].getThreeShip());
+        } else if (values.message === 'terminated') {
+          this.shipArray = this.shipArray.filter(
+            shot => shot.getName() !== this.shipArray[i].getName()
+          );
+        }
       }
     }
     return isFound;

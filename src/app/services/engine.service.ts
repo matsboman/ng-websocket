@@ -70,17 +70,14 @@ export class EngineService implements OnDestroy {
     for (let i = 0; i < this.shipArray.length; i++) {
       if (values.name === this.shipArray[i].getName()) {
         isFound = true;
-        if (!this.shipArray[i].isDead()) {
-          if (values.message === 'died') {
-            this.shipArray[i].setDied();
-          }
-          this.shipArray[i].update(values.position, values.direction);
-        } else if (this.shipArray[i].isDead()) {
+        if (values.message === 'died') {
           this.scene.remove(this.shipArray[i].getThreeShip());
-        } else if (values.message === 'terminated') {
           this.shipArray = this.shipArray.filter(
-            shot => shot.getName() !== this.shipArray[i].getName()
+            ship => ship.getName() !== this.shipArray[i].getName()
           );
+          this.camera.resetCamera();
+        } else {
+          this.shipArray[i].update(values.position, values.direction);
         }
       }
     }
@@ -92,7 +89,6 @@ export class EngineService implements OnDestroy {
     for (let i = 0; i < this.shotArray.length; i++) {
       if (values.name === this.shotArray[i].getName()) {
         isFound = true;
-        console.log(values.message);
         if (!this.shotArray[i].isDead()) {
           if (values.message === 'died') {
             this.shotArray[i].setDied();
@@ -101,9 +97,9 @@ export class EngineService implements OnDestroy {
         } else if (this.shotArray[i].isDead()) {
           this.scene.remove(this.shotArray[i].getThreeShot());
         } else if (values.message === 'terminated') {
-          this.shotArray = this.shotArray.filter(
-            shot => shot.getName() !== this.shotArray[i].getName()
-          );
+          this.shotArray = this.shotArray.filter(shot => {
+            return shot.getName() !== this.shotArray[i].getName();
+          });
         }
       }
     }
@@ -133,8 +129,10 @@ export class EngineService implements OnDestroy {
 
   public updateShip(values: any) {
     if (!this.updateShipPosition(values)) {
-      console.log('adding ship to scene...');
-      const ship = this.createShip(values, false);
+      if (values.message !== 'died') {
+        console.log('adding ship to scene...');
+        this.createShip(values, false);
+      }
     } else {
       for (let i = 0; i < this.shipArray.length; i++) {
         if (

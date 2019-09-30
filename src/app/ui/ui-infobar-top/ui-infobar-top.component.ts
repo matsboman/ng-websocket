@@ -67,18 +67,23 @@ export class UiInfobarTopComponent implements OnInit {
       const values = jsonMessage.values;
       for (let i = 0; i < values.length; i++) {
         if (values[i].type === 'ship') {
-          const shipName = values[i].name;
-          const pos = values[i].position;
-          if (!this.shipsIncludes(shipName)) {
-            this.shipsArray.push({
-              name: values[i].name,
-              posX: values[i].position.x,
-              posY: values[i].position.y,
-              posZ: values[i].position.z
-            });
-            // console.log(this.shipsArray);
+          if (values[i].message === 'died') {
+            this.shipsArray = this.shipsArray.filter(
+              ship => ship.name !== values[i].name
+            );
           } else {
-            this.updatePosition(shipName, pos);
+            const shipName = values[i].name;
+            const pos = values[i].position;
+            if (!this.shipsIncludes(shipName)) {
+              this.shipsArray.push({
+                name: values[i].name,
+                posX: values[i].position.x,
+                posY: values[i].position.y,
+                posZ: values[i].position.z
+              });
+            } else {
+              this.updatePosition(shipName, pos);
+            }
           }
         }
       }

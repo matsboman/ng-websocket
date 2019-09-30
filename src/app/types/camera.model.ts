@@ -76,7 +76,7 @@ export class Camera {
     };
   }
 
-  private resetCamera() {
+  public resetCamera() {
     this.camera.position.setX(0);
     this.camera.position.setY(0);
     this.camera.position.setZ(50);

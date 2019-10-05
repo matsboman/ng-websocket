@@ -80,11 +80,13 @@ export class EngineService implements OnDestroy {
       if (values.name === this.shipArray[i].getName()) {
         isFound = true;
         if (values.message === 'died') {
+          if (this.shipArray[i].isPlayer()) {
+            this.camera.resetCamera();
+          }
           this.scene.remove(this.shipArray[i].getThreeShip());
           this.shipArray = this.shipArray.filter(
             ship => ship.getName() !== this.shipArray[i].getName()
           );
-          this.camera.resetCamera();
         } else {
           this.shipArray[i].update(values.position, values.direction);
         }

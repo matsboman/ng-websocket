@@ -44,7 +44,6 @@ export class Camera {
         new THREE.Vector3(forwardPoint.x, forwardPoint.y, forwardPoint.z)
       );
     } else {
-      this.isCameraShipView = false;
       this.resetCamera();
     }
   }

@@ -36,6 +36,16 @@ export class EngineService implements OnDestroy {
     this.scalingFactor = factor;
   }
 
+  public isPlayerShip() {
+    let isPlayerExist = false;
+    for (let i = 0; i < this.shipArray.length; i++) {
+      if (this.shipArray[i].isPlayer()) {
+        isPlayerExist = true
+      }
+    }
+    return isPlayerExist;
+  }
+
   public playerShipName() {
     let name = null;
     for (let i = 0; i < this.shipArray.length; i++) {
@@ -47,7 +57,6 @@ export class EngineService implements OnDestroy {
   }
 
   public createShip(values: any, isPlayerShip: boolean) {
-    console.log(values);
     const ship = new Ship(
       values.name,
       values.position,

@@ -25,7 +25,7 @@ export class UiInfobarTopComponent implements OnInit {
 
   ngOnInit() {
     this.positionForm = this.formBuilder.group({
-      posX: [30],
+      posX: [20],
       posY: [0.0],
       posZ: [0.0]
     });

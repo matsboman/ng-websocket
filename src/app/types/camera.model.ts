@@ -79,7 +79,8 @@ export class Camera {
   public resetCamera() {
     this.camera.position.setX(0);
     this.camera.position.setY(0);
-    this.camera.position.setZ(50);
+    this.camera.position.setZ(30);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    this.isCameraShipView = false;
   }
 }

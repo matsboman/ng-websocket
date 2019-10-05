@@ -26,7 +26,7 @@ export class EngineComponent implements AfterViewInit {
       console.log(event);
       this.engineService.toggleCameraView();
     }
-    if (event.key === 'f') {
+    if (event.key === 'f' && this.engineService.isPlayerShip()) {
       console.log('fire...');
       this.chatService.messages.next({
         message: 'fire',

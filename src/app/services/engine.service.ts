@@ -23,9 +23,8 @@ export class EngineService implements OnDestroy {
 
   private shipArray: Ship[] = [];
   private shotArray: Shot[] = [];
-  // private myShipName: string;
 
-  public constructor(private ngZone: NgZone) {}
+  public constructor(private ngZone: NgZone) { }
 
   public ngOnDestroy() {
     if (this.frameId != null) {
@@ -60,6 +59,7 @@ export class EngineService implements OnDestroy {
   }
 
   public createShot(values: any) {
+    console.log(values.name);
     const shot: Shot = new Shot(values.name, values.position, values.direction);
     this.shotArray.push(shot);
     return shot.getThreeShot();
@@ -89,17 +89,13 @@ export class EngineService implements OnDestroy {
     for (let i = 0; i < this.shotArray.length; i++) {
       if (values.name === this.shotArray[i].getName()) {
         isFound = true;
-        if (!this.shotArray[i].isDead()) {
-          if (values.message === 'died') {
-            this.shotArray[i].setDied();
-          }
-          this.shotArray[i].update(values.position, values.direction);
-        } else if (this.shotArray[i].isDead()) {
+        if (values.message === 'died') {
           this.scene.remove(this.shotArray[i].getThreeShot());
-        } else if (values.message === 'terminated') {
           this.shotArray = this.shotArray.filter(shot => {
             return shot.getName() !== this.shotArray[i].getName();
           });
+        } else {
+          this.shotArray[i].update(values.position, values.direction);
         }
       }
     }
@@ -117,13 +113,13 @@ export class EngineService implements OnDestroy {
       this.sun.position.setY(position.y);
       this.sun.position.setZ(position.z);
     } else if (values.name === 'earth') {
-      this.earth.position.setX(position.x / this.scalingFactor);
-      this.earth.position.setY(position.y / this.scalingFactor);
-      this.earth.position.setZ(position.z / this.scalingFactor);
+      this.earth.position.setX(position.x);
+      this.earth.position.setY(position.y);
+      this.earth.position.setZ(position.z);
     } else if (values.name === 'venus') {
-      this.venus.position.setX(position.x / this.scalingFactor);
-      this.venus.position.setY(position.y / this.scalingFactor);
-      this.venus.position.setZ(position.z / this.scalingFactor);
+      this.venus.position.setX(position.x);
+      this.venus.position.setY(position.y);
+      this.venus.position.setZ(position.z);
     }
   }
 
@@ -147,8 +143,10 @@ export class EngineService implements OnDestroy {
 
   public updateShot(values: any) {
     if (!this.updateShotPosition(values)) {
-      const shot = this.createShot(values);
-      this.scene.add(shot);
+      if (!(values.message === 'died' || values.message === 'terminated')) {
+        const shot = this.createShot(values);
+        this.scene.add(shot);
+      }
     }
   }
 

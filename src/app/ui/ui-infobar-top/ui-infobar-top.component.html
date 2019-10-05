@@ -44,6 +44,29 @@
               <div class="col-md-4">
                 <div class="panel panel-default">
                   <div class="panel-heading">
+                    <h3 class="panel-title">Specifications</h3>
+                  </div>
+                  <div class="panel-body">
+                    <form [formGroup]="nameForm">
+                      <label for="exampleFormControlInput1">Ship Name</label>
+                      <div class="input-group input-group-sm mb-3">
+                        <input type="text" class="form-control" formControlName="name" aria-label="name"
+                          aria-describedby="inputGroup-sizing-sm">
+                      </div>
+                    </form>
+                    <form [formGroup]="speedForm">
+                      <label for="exampleFormControlInput1">Speed</label>
+                      <div class="input-group input-group-sm mb-3">
+                        <input type="number" class="form-control" formControlName="speed" aria-label="speed"
+                          aria-describedby="inputGroup-sizing-sm">
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
                     <h3 class="panel-title">Position</h3>
                   </div>
                   <div class="panel-body">
@@ -99,29 +122,6 @@
                           <span class="input-group-text" id="inputGroup-sizing-sm">K:</span>
                         </div>
                         <input type="number" class="form-control" formControlName="dirK" aria-label="dirK"
-                          aria-describedby="inputGroup-sizing-sm">
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <h3 class="panel-title">Specifications</h3>
-                  </div>
-                  <div class="panel-body">
-                    <form [formGroup]="speedForm">
-                      <label for="exampleFormControlInput1">Speed</label>
-                      <div class="input-group input-group-sm mb-3">
-                        <input type="number" class="form-control" formControlName="speed" aria-label="speed"
-                          aria-describedby="inputGroup-sizing-sm">
-                      </div>
-                    </form>
-                    <form [formGroup]="nameForm">
-                      <label for="exampleFormControlInput1">Ship Name</label>
-                      <div class="input-group input-group-sm mb-3">
-                        <input type="text" class="form-control" formControlName="name" aria-label="name"
                           aria-describedby="inputGroup-sizing-sm">
                       </div>
                     </form>

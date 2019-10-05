@@ -5,7 +5,6 @@ export class Ship {
   private ship: THREE.Mesh;
   private direction = { i: 0, j: 0, k: 0 };
   private isPlayerShip = false;
-  private died = false;
 
   constructor(
     name: string,
@@ -51,14 +50,6 @@ export class Ship {
 
   public getDirection() {
     return { i: this.direction.i, j: this.direction.j, k: this.direction.k };
-  }
-
-  public setDied() {
-    this.died = true;
-  }
-
-  public isDead() {
-    return this.died;
   }
 
   public update(position: any, direction: any) {

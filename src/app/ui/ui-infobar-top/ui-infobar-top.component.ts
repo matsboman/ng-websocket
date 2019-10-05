@@ -21,21 +21,21 @@ export class UiInfobarTopComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private eventService: EventService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.positionForm = this.formBuilder.group({
-      posX: [0.0],
+      posX: [30],
       posY: [0.0],
       posZ: [0.0]
     });
     this.directionForm = this.formBuilder.group({
-      dirI: [0.0],
+      dirI: [-1],
       dirJ: [0.0],
       dirK: [0.0]
     });
-    this.speedForm = this.formBuilder.group({ speed: [0.0] });
-    this.nameForm = this.formBuilder.group({ name: [] });
+    this.speedForm = this.formBuilder.group({ speed: [0.01] });
+    this.nameForm = this.formBuilder.group({ name: ["one"] });
     this.eventService.change.subscribe((event: any) => {
       this.handleEvent(event);
     });
